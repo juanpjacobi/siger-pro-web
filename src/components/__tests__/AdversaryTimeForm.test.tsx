@@ -4,6 +4,11 @@ import { AdversaryTimeForm } from "@/components/AdversaryTimeForm";
 
 const catalogs = { amenazas: ["Robo", "Otra"] };
 
+async function selectOption(labelMatcher: RegExp, optionText: string) {
+  await userEvent.click(screen.getByLabelText(labelMatcher));
+  await userEvent.click(await screen.findByRole("option", { name: optionText }));
+}
+
 describe("AdversaryTimeForm", () => {
   it("no llama a onSubmit si falta la amenaza o algun tiempo", async () => {
     const onSubmit = jest.fn();
@@ -20,7 +25,7 @@ describe("AdversaryTimeForm", () => {
     const onSubmit = jest.fn().mockResolvedValue(undefined);
     render(<AdversaryTimeForm catalogs={catalogs} onSubmit={onSubmit} />);
 
-    await userEvent.selectOptions(screen.getByLabelText(/amenaza/i), "Robo");
+    await selectOption(/amenaza/i, "Robo");
     await userEvent.type(screen.getByLabelText(/^ti - Tiempo de intrusion$/i), "10");
     await userEvent.type(screen.getByLabelText(/^te - Tiempo de ejecucion$/i), "5");
     await userEvent.type(screen.getByLabelText(/^td - Tiempo de deteccion$/i), "3");

@@ -6,6 +6,8 @@ import { AdversaryTimeForm } from "@/components/AdversaryTimeForm";
 import { AdversaryTimeList } from "@/components/AdversaryTimeList";
 import { MoslerForm } from "@/components/MoslerForm";
 import { MoslerList } from "@/components/MoslerList";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   AdversaryTimeEntry,
   AdversaryTimeInput,
@@ -13,8 +15,6 @@ import {
   MoslerInput,
   api,
 } from "@/lib/api";
-
-type Tab = "mosler" | "tiempos";
 
 interface Catalogs {
   amenazas: string[];
@@ -27,7 +27,6 @@ export default function ProyectoDetailPage() {
   const params = useParams<{ id: string }>();
   const projectId = params.id;
 
-  const [tab, setTab] = useState<Tab>("mosler");
   const [catalogs, setCatalogs] = useState<Catalogs | null>(null);
   const [moslerEntries, setMoslerEntries] = useState<MoslerEntry[] | null>(null);
   const [adversaryEntries, setAdversaryEntries] = useState<AdversaryTimeEntry[] | null>(null);
@@ -90,26 +89,20 @@ export default function ProyectoDetailPage() {
   }
 
   return (
-    <main className="flex flex-col gap-6">
-      {error && <p className="rounded bg-red-50 p-3 text-sm text-red-700">{error}</p>}
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
+      {error && (
+        <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
+          {error}
+        </p>
+      )}
 
-      <div className="flex gap-2 border-b border-gray-200">
-        <button
-          onClick={() => setTab("mosler")}
-          className={`px-3 py-2 text-sm font-medium ${tab === "mosler" ? "border-b-2 border-blue-600 text-blue-600" : "text-gray-500"}`}
-        >
-          Matriz Mosler
-        </button>
-        <button
-          onClick={() => setTab("tiempos")}
-          className={`px-3 py-2 text-sm font-medium ${tab === "tiempos" ? "border-b-2 border-blue-600 text-blue-600" : "text-gray-500"}`}
-        >
-          Tiempos Adversario
-        </button>
-      </div>
+      <Tabs defaultValue="mosler">
+        <TabsList>
+          <TabsTrigger value="mosler">Matriz Mosler</TabsTrigger>
+          <TabsTrigger value="tiempos">Tiempos Adversario</TabsTrigger>
+        </TabsList>
 
-      {tab === "mosler" && (
-        <section className="flex flex-col gap-4">
+        <TabsContent value="mosler" className="flex flex-col gap-4">
           {editingMosler && catalogs ? (
             <MoslerForm
               catalogs={catalogs}
@@ -118,24 +111,19 @@ export default function ProyectoDetailPage() {
               onCancel={() => setEditingMosler(null)}
             />
           ) : (
-            <button
-              onClick={() => setEditingMosler("new")}
-              className="w-full rounded bg-blue-600 px-4 py-2 font-medium text-white sm:w-auto"
-            >
+            <Button onClick={() => setEditingMosler("new")} className="w-full sm:w-auto">
               Nueva entrada Mosler
-            </button>
+            </Button>
           )}
 
           {moslerEntries === null ? (
-            <p className="text-sm text-gray-500">Cargando...</p>
+            <p className="text-sm text-muted-foreground">Cargando...</p>
           ) : (
             <MoslerList entries={moslerEntries} onEdit={setEditingMosler} onDelete={handleMoslerDelete} />
           )}
-        </section>
-      )}
+        </TabsContent>
 
-      {tab === "tiempos" && (
-        <section className="flex flex-col gap-4">
+        <TabsContent value="tiempos" className="flex flex-col gap-4">
           {editingTime && catalogs ? (
             <AdversaryTimeForm
               catalogs={{ amenazas: catalogs.amenazas }}
@@ -144,21 +132,18 @@ export default function ProyectoDetailPage() {
               onCancel={() => setEditingTime(null)}
             />
           ) : (
-            <button
-              onClick={() => setEditingTime("new")}
-              className="w-full rounded bg-blue-600 px-4 py-2 font-medium text-white sm:w-auto"
-            >
+            <Button onClick={() => setEditingTime("new")} className="w-full sm:w-auto">
               Nuevo escenario de tiempos
-            </button>
+            </Button>
           )}
 
           {adversaryEntries === null ? (
-            <p className="text-sm text-gray-500">Cargando...</p>
+            <p className="text-sm text-muted-foreground">Cargando...</p>
           ) : (
             <AdversaryTimeList entries={adversaryEntries} onEdit={setEditingTime} onDelete={handleTimeDelete} />
           )}
-        </section>
-      )}
-    </main>
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 }

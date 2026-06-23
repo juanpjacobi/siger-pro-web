@@ -1,3 +1,6 @@
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AdversaryTimeEntry } from "@/lib/api";
 import { TimeStatusBadge } from "./TimeStatusBadge";
 
@@ -10,7 +13,7 @@ interface AdversaryTimeListProps {
 export function AdversaryTimeList({ entries, onEdit, onDelete }: AdversaryTimeListProps) {
   if (entries.length === 0) {
     return (
-      <p className="rounded border border-dashed border-gray-300 p-6 text-center text-sm text-gray-500">
+      <p className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">
         Todavia no hay escenarios de tiempos. Cargar el primero.
       </p>
     );
@@ -18,59 +21,70 @@ export function AdversaryTimeList({ entries, onEdit, onDelete }: AdversaryTimeLi
 
   return (
     <>
-      <ul className="flex flex-col gap-3 md:hidden" data-testid="adversary-time-cards">
+      <div className="flex flex-col gap-3 md:hidden" data-testid="adversary-time-cards">
         {entries.map((entry) => (
-          <li key={entry.id} className="rounded border border-gray-200 p-4">
-            <div className="flex items-start justify-between gap-2">
-              <p className="font-medium">{entry.amenaza}</p>
-              <TimeStatusBadge estado={entry.estado} />
-            </div>
-            <p className="mt-2 text-sm text-gray-700">Delta: {entry.delta}</p>
-            <p className="mt-1 text-sm text-gray-500">{entry.msg}</p>
-            <div className="mt-3 flex gap-2">
-              <button onClick={() => onEdit(entry)} className="flex-1 rounded border border-gray-300 py-2 text-sm">
-                Editar
-              </button>
-              <button
-                onClick={() => onDelete(entry)}
-                className="flex-1 rounded border border-red-300 py-2 text-sm text-red-700"
-              >
-                Borrar
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
-
-      <table className="hidden w-full text-left text-sm md:table" data-testid="adversary-time-table">
-        <thead>
-          <tr className="border-b border-gray-200">
-            <th className="py-2">Amenaza</th>
-            <th className="py-2">Delta</th>
-            <th className="py-2">Estado</th>
-            <th className="py-2">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {entries.map((entry) => (
-            <tr key={entry.id} className="border-b border-gray-100">
-              <td className="py-2">{entry.amenaza}</td>
-              <td className="py-2">{entry.delta}</td>
-              <td className="py-2">
+          <Card key={entry.id}>
+            <CardContent className="flex flex-col gap-3">
+              <div className="flex items-start justify-between gap-2">
+                <p className="font-medium leading-none">{entry.amenaza}</p>
                 <TimeStatusBadge estado={entry.estado} />
-              </td>
-              <td className="py-2">
-                <button onClick={() => onEdit(entry)} className="mr-2 text-blue-600">
+              </div>
+              <p className="text-sm">Delta: {entry.delta}</p>
+              <p className="text-sm text-muted-foreground">{entry.msg}</p>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" className="flex-1" onClick={() => onEdit(entry)}>
                   Editar
-                </button>
-                <button onClick={() => onDelete(entry)} className="text-red-600">
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1 border-destructive/40 text-destructive hover:bg-destructive/10"
+                  onClick={() => onDelete(entry)}
+                >
                   Borrar
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="hidden md:block" data-testid="adversary-time-table">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Amenaza</TableHead>
+              <TableHead>Delta</TableHead>
+              <TableHead>Estado</TableHead>
+              <TableHead>Acciones</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {entries.map((entry) => (
+              <TableRow key={entry.id}>
+                <TableCell>{entry.amenaza}</TableCell>
+                <TableCell>{entry.delta}</TableCell>
+                <TableCell>
+                  <TimeStatusBadge estado={entry.estado} />
+                </TableCell>
+                <TableCell>
+                  <Button variant="link" size="sm" className="h-auto p-0" onClick={() => onEdit(entry)}>
+                    Editar
+                  </Button>
+                  <Button
+                    variant="link"
+                    size="sm"
+                    className="h-auto p-0 text-destructive"
+                    onClick={() => onDelete(entry)}
+                  >
+                    Borrar
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </>
   );
 }

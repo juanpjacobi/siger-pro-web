@@ -1,10 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+import { AppShell } from "@/components/app-shell";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
+  variable: "--font-sans",
   weight: "100 900",
 });
 const geistMono = localFont({
@@ -29,9 +32,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html lang="es" className={cn("dark font-sans", geistSans.variable)}>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <div className="mx-auto max-w-3xl px-4 py-6 md:max-w-5xl">{children}</div>
+        <TooltipProvider>
+          <AppShell>{children}</AppShell>
+        </TooltipProvider>
       </body>
     </html>
   );

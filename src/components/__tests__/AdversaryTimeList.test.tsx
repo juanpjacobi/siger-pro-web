@@ -41,12 +41,12 @@ describe("AdversaryTimeList", () => {
     expect(screen.getAllByText("Critico").length).toBeGreaterThan(0);
   });
 
-  it("usa clases mobile-first: cards visibles en mobile (md:hidden), tabla solo desde md (hidden md:table)", () => {
+  it("usa clases mobile-first: cards visibles en mobile (md:hidden), tabla solo desde md (hidden md:block)", () => {
     render(<AdversaryTimeList entries={[buildEntry()]} onEdit={jest.fn()} onDelete={jest.fn()} />);
 
     expect(screen.getByTestId("adversary-time-cards").className).toContain("md:hidden");
     const table = screen.getByTestId("adversary-time-table");
     expect(table.className).toContain("hidden");
-    expect(table.className).toContain("md:table");
+    expect(table.className).toContain("md:block");
   });
 });

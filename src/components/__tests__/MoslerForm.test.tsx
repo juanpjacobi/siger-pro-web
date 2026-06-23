@@ -9,6 +9,11 @@ const catalogs: MoslerFormCatalogs = {
   estadosMedida: ["Pendiente", "Implementada"],
 };
 
+async function selectOption(labelMatcher: RegExp, optionText: string) {
+  await userEvent.click(screen.getByLabelText(labelMatcher));
+  await userEvent.click(await screen.findByRole("option", { name: optionText }));
+}
+
 describe("MoslerForm", () => {
   it("no llama a onSubmit si falta la amenaza o algun factor", async () => {
     const onSubmit = jest.fn();
@@ -25,7 +30,7 @@ describe("MoslerForm", () => {
     const onSubmit = jest.fn().mockResolvedValue(undefined);
     render(<MoslerForm catalogs={catalogs} onSubmit={onSubmit} />);
 
-    await userEvent.selectOptions(screen.getByLabelText(/amenaza/i), "Robo");
+    await selectOption(/amenaza/i, "Robo");
     await userEvent.type(screen.getByLabelText(/^F - Funcion$/i), "1");
     await userEvent.type(screen.getByLabelText(/^S - Sustitucion$/i), "2");
     await userEvent.type(screen.getByLabelText(/^P - Profundidad$/i), "3");

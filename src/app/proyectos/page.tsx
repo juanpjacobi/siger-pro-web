@@ -1,7 +1,12 @@
 "use client";
 
+import { Building2 } from "lucide-react";
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { ApiError, Project, api } from "@/lib/api";
 
 export default function ProyectosPage() {
@@ -36,67 +41,65 @@ export default function ProyectosPage() {
   }
 
   return (
-    <main className="flex flex-col gap-8">
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
       <h1 className="text-2xl font-bold">Proyectos</h1>
 
-      {error && <p className="rounded bg-red-50 p-3 text-sm text-red-700">{error}</p>}
+      {error && (
+        <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
+          {error}
+        </p>
+      )}
 
-      <form onSubmit={handleCreate} className="flex flex-col gap-3 rounded border border-gray-200 p-4">
-        <h2 className="font-semibold">Nuevo proyecto</h2>
-        <div>
-          <label htmlFor="nombre" className="block text-sm font-medium">
-            Nombre
-          </label>
-          <input
-            id="nombre"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-            className="mt-1 w-full rounded border border-gray-300 p-2"
-          />
-        </div>
-        <div>
-          <label htmlFor="cliente" className="block text-sm font-medium">
-            Cliente
-          </label>
-          <input
-            id="cliente"
-            value={cliente}
-            onChange={(e) => setCliente(e.target.value)}
-            className="mt-1 w-full rounded border border-gray-300 p-2"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={creating}
-          className="w-full rounded bg-blue-600 px-4 py-2 font-medium text-white disabled:opacity-50 sm:w-auto"
-        >
-          {creating ? "Creando..." : "Crear proyecto"}
-        </button>
-      </form>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Nuevo proyecto</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleCreate} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="nombre">Nombre</Label>
+              <Input id="nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="cliente">Cliente</Label>
+              <Input id="cliente" value={cliente} onChange={(e) => setCliente(e.target.value)} />
+            </div>
+            <Button type="submit" disabled={creating} className="w-full sm:w-auto">
+              {creating ? "Creando..." : "Crear proyecto"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
 
-      {projects === null && <p className="text-sm text-gray-500">Cargando proyectos...</p>}
+      {projects === null && <p className="text-sm text-muted-foreground">Cargando proyectos...</p>}
 
       {projects && projects.length === 0 && (
-        <p className="rounded border border-dashed border-gray-300 p-6 text-center text-sm text-gray-500">
+        <p className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">
           Todavia no hay proyectos. Crear el primero.
         </p>
       )}
 
       {projects && projects.length > 0 && (
-        <ul className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2">
           {projects.map((project) => (
-            <li key={project.id}>
-              <Link
-                href={`/proyectos/${project.id}`}
-                className="block rounded border border-gray-200 p-4 hover:border-blue-400"
-              >
-                <p className="font-medium">{project.nombre}</p>
-                {project.cliente && <p className="text-sm text-gray-500">{project.cliente}</p>}
-              </Link>
-            </li>
+            <Link key={project.id} href={`/proyectos/${project.id}`}>
+              <Card className="transition-colors hover:border-primary/50">
+                <CardContent className="flex items-center gap-3 py-4">
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-accent text-accent-foreground">
+                    <Building2 className="size-4" />
+                  </div>
+                  <div>
+                    <p className="font-medium leading-none">{project.nombre}</p>
+                    {project.cliente && (
+                      <p className="mt-1 text-sm text-muted-foreground">{project.cliente}</p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
-        </ul>
+        </div>
       )}
-    </main>
+    </div>
   );
 }

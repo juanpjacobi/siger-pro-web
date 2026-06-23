@@ -53,12 +53,12 @@ describe("MoslerList", () => {
     expect(screen.getAllByText("Critico").length).toBeGreaterThan(0);
   });
 
-  it("usa clases mobile-first: cards visibles en mobile (md:hidden), tabla solo desde md (hidden md:table)", () => {
+  it("usa clases mobile-first: cards visibles en mobile (md:hidden), tabla solo desde md (hidden md:block)", () => {
     render(<MoslerList entries={[buildEntry()]} onEdit={jest.fn()} onDelete={jest.fn()} />);
 
     expect(screen.getByTestId("mosler-cards").className).toContain("md:hidden");
     const table = screen.getByTestId("mosler-table");
     expect(table.className).toContain("hidden");
-    expect(table.className).toContain("md:table");
+    expect(table.className).toContain("md:block");
   });
 });

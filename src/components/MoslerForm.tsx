@@ -1,6 +1,11 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { MoslerEntry, MoslerInput } from "@/lib/api";
 
 export interface MoslerFormCatalogs {
@@ -94,172 +99,121 @@ export function MoslerForm({ catalogs, initial, onSubmit, onCancel }: MoslerForm
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4" data-testid="mosler-form">
-      <div>
-        <label htmlFor="amenaza" className="block text-sm font-medium">
-          Amenaza
-        </label>
-        <select
-          id="amenaza"
-          value={amenaza}
-          onChange={(e) => setAmenaza(e.target.value)}
-          className="mt-1 w-full rounded border border-gray-300 p-2"
-        >
-          <option value="">Seleccionar...</option>
-          {catalogs.amenazas.map((a) => (
-            <option key={a} value={a}>
-              {a}
-            </option>
-          ))}
-        </select>
-        {errors.amenaza && <p className="mt-1 text-sm text-red-600">{errors.amenaza}</p>}
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="amenaza">Amenaza</Label>
+        <Select value={amenaza} onValueChange={(value) => setAmenaza(value ?? "")}>
+          <SelectTrigger id="amenaza" className="w-full" aria-label="Amenaza">
+            <SelectValue placeholder="Seleccionar..." />
+          </SelectTrigger>
+          <SelectContent>
+            {catalogs.amenazas.map((a) => (
+              <SelectItem key={a} value={a}>
+                {a}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {errors.amenaza && <p className="text-sm text-destructive">{errors.amenaza}</p>}
       </div>
 
       {amenaza === "Otra" && (
-        <div>
-          <label htmlFor="amenazaOtra" className="block text-sm font-medium">
-            Detalle de la amenaza
-          </label>
-          <input
-            id="amenazaOtra"
-            value={amenazaOtra}
-            onChange={(e) => setAmenazaOtra(e.target.value)}
-            className="mt-1 w-full rounded border border-gray-300 p-2"
-          />
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="amenazaOtra">Detalle de la amenaza</Label>
+          <Input id="amenazaOtra" value={amenazaOtra} onChange={(e) => setAmenazaOtra(e.target.value)} />
         </div>
       )}
 
-      <div>
-        <label htmlFor="sector" className="block text-sm font-medium">
-          Sector
-        </label>
-        <input
-          id="sector"
-          value={sector}
-          onChange={(e) => setSector(e.target.value)}
-          className="mt-1 w-full rounded border border-gray-300 p-2"
-        />
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="sector">Sector</Label>
+        <Input id="sector" value={sector} onChange={(e) => setSector(e.target.value)} />
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {FACTORS.map(({ key, label }) => (
-          <div key={key}>
-            <label htmlFor={key} className="block text-sm font-medium">
-              {label}
-            </label>
-            <input
+          <div key={key} className="flex flex-col gap-1.5">
+            <Label htmlFor={key}>{label}</Label>
+            <Input
               id={key}
               type="number"
               min={1}
               max={5}
               value={factors[key]}
               onChange={(e) => setFactors((prev) => ({ ...prev, [key]: e.target.value }))}
-              className="mt-1 w-full rounded border border-gray-300 p-2"
             />
-            {errors[key] && <p className="mt-1 text-sm text-red-600">{errors[key]}</p>}
+            {errors[key] && <p className="text-sm text-destructive">{errors[key]}</p>}
           </div>
         ))}
       </div>
 
-      <div>
-        <label htmlFor="medidas" className="block text-sm font-medium">
-          Medidas propuestas
-        </label>
-        <textarea
-          id="medidas"
-          value={medidas}
-          onChange={(e) => setMedidas(e.target.value)}
-          className="mt-1 w-full rounded border border-gray-300 p-2"
-        />
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="medidas">Medidas propuestas</Label>
+        <Textarea id="medidas" value={medidas} onChange={(e) => setMedidas(e.target.value)} />
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <div>
-          <label htmlFor="tipoMedida" className="block text-sm font-medium">
-            Tipo de medida
-          </label>
-          <select
-            id="tipoMedida"
-            value={tipoMedida}
-            onChange={(e) => setTipoMedida(e.target.value)}
-            className="mt-1 w-full rounded border border-gray-300 p-2"
-          >
-            <option value="">Seleccionar...</option>
-            {catalogs.tiposMedida.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="tipoMedida">Tipo de medida</Label>
+          <Select value={tipoMedida} onValueChange={(value) => setTipoMedida(value ?? "")}>
+            <SelectTrigger id="tipoMedida" className="w-full" aria-label="Tipo de medida">
+              <SelectValue placeholder="Seleccionar..." />
+            </SelectTrigger>
+            <SelectContent>
+              {catalogs.tiposMedida.map((t) => (
+                <SelectItem key={t} value={t}>
+                  {t}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
-        <div>
-          <label htmlFor="responsable" className="block text-sm font-medium">
-            Responsable
-          </label>
-          <input
-            id="responsable"
-            value={responsable}
-            onChange={(e) => setResponsable(e.target.value)}
-            className="mt-1 w-full rounded border border-gray-300 p-2"
-          />
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="responsable">Responsable</Label>
+          <Input id="responsable" value={responsable} onChange={(e) => setResponsable(e.target.value)} />
         </div>
 
-        <div>
-          <label htmlFor="residual" className="block text-sm font-medium">
-            Riesgo residual
-          </label>
-          <select
-            id="residual"
-            value={residual}
-            onChange={(e) => setResidual(e.target.value)}
-            className="mt-1 w-full rounded border border-gray-300 p-2"
-          >
-            <option value="">Seleccionar...</option>
-            {catalogs.residuales.map((r) => (
-              <option key={r} value={r}>
-                {r}
-              </option>
-            ))}
-          </select>
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="residual">Riesgo residual</Label>
+          <Select value={residual} onValueChange={(value) => setResidual(value ?? "")}>
+            <SelectTrigger id="residual" className="w-full" aria-label="Riesgo residual">
+              <SelectValue placeholder="Seleccionar..." />
+            </SelectTrigger>
+            <SelectContent>
+              {catalogs.residuales.map((r) => (
+                <SelectItem key={r} value={r}>
+                  {r}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
-        <div>
-          <label htmlFor="estadoMedida" className="block text-sm font-medium">
-            Estado de la medida
-          </label>
-          <select
-            id="estadoMedida"
-            value={estadoMedida}
-            onChange={(e) => setEstadoMedida(e.target.value)}
-            className="mt-1 w-full rounded border border-gray-300 p-2"
-          >
-            <option value="">Seleccionar...</option>
-            {catalogs.estadosMedida.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="estadoMedida">Estado de la medida</Label>
+          <Select value={estadoMedida} onValueChange={(value) => setEstadoMedida(value ?? "")}>
+            <SelectTrigger id="estadoMedida" className="w-full" aria-label="Estado de la medida">
+              <SelectValue placeholder="Seleccionar..." />
+            </SelectTrigger>
+            <SelectContent>
+              {catalogs.estadosMedida.map((s) => (
+                <SelectItem key={s} value={s}>
+                  {s}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
       <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
         {onCancel && (
-          <button
-            type="button"
-            onClick={onCancel}
-            className="w-full rounded border border-gray-300 px-4 py-2 sm:w-auto"
-          >
+          <Button type="button" variant="outline" onClick={onCancel} className="w-full sm:w-auto">
             Cancelar
-          </button>
+          </Button>
         )}
-        <button
-          type="submit"
-          disabled={submitting}
-          className="w-full rounded bg-blue-600 px-4 py-2 font-medium text-white disabled:opacity-50 sm:w-auto"
-        >
+        <Button type="submit" disabled={submitting} className="w-full sm:w-auto">
           {submitting ? "Guardando..." : "Guardar"}
-        </button>
+        </Button>
       </div>
     </form>
   );

@@ -1,3 +1,6 @@
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { MoslerEntry } from "@/lib/api";
 import { RiskBadge } from "./RiskBadge";
 
@@ -10,7 +13,7 @@ interface MoslerListProps {
 export function MoslerList({ entries, onEdit, onDelete }: MoslerListProps) {
   if (entries.length === 0) {
     return (
-      <p className="rounded border border-dashed border-gray-300 p-6 text-center text-sm text-gray-500">
+      <p className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">
         Todavia no hay entradas Mosler. Cargar la primera.
       </p>
     );
@@ -18,63 +21,76 @@ export function MoslerList({ entries, onEdit, onDelete }: MoslerListProps) {
 
   return (
     <>
-      <ul className="flex flex-col gap-3 md:hidden" data-testid="mosler-cards">
+      <div className="flex flex-col gap-3 md:hidden" data-testid="mosler-cards">
         {entries.map((entry) => (
-          <li key={entry.id} className="rounded border border-gray-200 p-4">
-            <div className="flex items-start justify-between gap-2">
-              <div>
-                <p className="font-medium">{entry.amenaza === "Otra" ? entry.amenazaOtra : entry.amenaza}</p>
-                <p className="text-sm text-gray-500">{entry.sector}</p>
-              </div>
-              <RiskBadge nivel={entry.nivel} />
-            </div>
-            <p className="mt-2 text-sm text-gray-700">EV: {entry.ev}</p>
-            <div className="mt-3 flex gap-2">
-              <button onClick={() => onEdit(entry)} className="flex-1 rounded border border-gray-300 py-2 text-sm">
-                Editar
-              </button>
-              <button
-                onClick={() => onDelete(entry)}
-                className="flex-1 rounded border border-red-300 py-2 text-sm text-red-700"
-              >
-                Borrar
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
-
-      <table className="hidden w-full text-left text-sm md:table" data-testid="mosler-table">
-        <thead>
-          <tr className="border-b border-gray-200">
-            <th className="py-2">Amenaza</th>
-            <th className="py-2">Sector</th>
-            <th className="py-2">EV</th>
-            <th className="py-2">Nivel</th>
-            <th className="py-2">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {entries.map((entry) => (
-            <tr key={entry.id} className="border-b border-gray-100">
-              <td className="py-2">{entry.amenaza === "Otra" ? entry.amenazaOtra : entry.amenaza}</td>
-              <td className="py-2">{entry.sector}</td>
-              <td className="py-2">{entry.ev}</td>
-              <td className="py-2">
+          <Card key={entry.id}>
+            <CardContent className="flex flex-col gap-3">
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <p className="font-medium leading-none">
+                    {entry.amenaza === "Otra" ? entry.amenazaOtra : entry.amenaza}
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">{entry.sector}</p>
+                </div>
                 <RiskBadge nivel={entry.nivel} />
-              </td>
-              <td className="py-2">
-                <button onClick={() => onEdit(entry)} className="mr-2 text-blue-600">
+              </div>
+              <p className="text-sm">EV: {entry.ev}</p>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" className="flex-1" onClick={() => onEdit(entry)}>
                   Editar
-                </button>
-                <button onClick={() => onDelete(entry)} className="text-red-600">
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1 border-destructive/40 text-destructive hover:bg-destructive/10"
+                  onClick={() => onDelete(entry)}
+                >
                   Borrar
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="hidden md:block" data-testid="mosler-table">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Amenaza</TableHead>
+              <TableHead>Sector</TableHead>
+              <TableHead>EV</TableHead>
+              <TableHead>Nivel</TableHead>
+              <TableHead>Acciones</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {entries.map((entry) => (
+              <TableRow key={entry.id}>
+                <TableCell>{entry.amenaza === "Otra" ? entry.amenazaOtra : entry.amenaza}</TableCell>
+                <TableCell>{entry.sector}</TableCell>
+                <TableCell>{entry.ev}</TableCell>
+                <TableCell>
+                  <RiskBadge nivel={entry.nivel} />
+                </TableCell>
+                <TableCell>
+                  <Button variant="link" size="sm" className="h-auto p-0" onClick={() => onEdit(entry)}>
+                    Editar
+                  </Button>
+                  <Button
+                    variant="link"
+                    size="sm"
+                    className="h-auto p-0 text-destructive"
+                    onClick={() => onDelete(entry)}
+                  >
+                    Borrar
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </>
   );
 }

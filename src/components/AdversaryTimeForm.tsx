@@ -1,6 +1,11 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { AdversaryTimeEntry, AdversaryTimeInput } from "@/lib/api";
 
 export interface AdversaryTimeFormCatalogs {
@@ -73,74 +78,53 @@ export function AdversaryTimeForm({ catalogs, initial, onSubmit, onCancel }: Adv
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4" data-testid="adversary-time-form">
-      <div>
-        <label htmlFor="at-amenaza" className="block text-sm font-medium">
-          Amenaza
-        </label>
-        <select
-          id="at-amenaza"
-          value={amenaza}
-          onChange={(e) => setAmenaza(e.target.value)}
-          className="mt-1 w-full rounded border border-gray-300 p-2"
-        >
-          <option value="">Seleccionar...</option>
-          {catalogs.amenazas.map((a) => (
-            <option key={a} value={a}>
-              {a}
-            </option>
-          ))}
-        </select>
-        {errors.amenaza && <p className="mt-1 text-sm text-red-600">{errors.amenaza}</p>}
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="at-amenaza">Amenaza</Label>
+        <Select value={amenaza} onValueChange={(value) => setAmenaza(value ?? "")}>
+          <SelectTrigger id="at-amenaza" className="w-full" aria-label="Amenaza">
+            <SelectValue placeholder="Seleccionar..." />
+          </SelectTrigger>
+          <SelectContent>
+            {catalogs.amenazas.map((a) => (
+              <SelectItem key={a} value={a}>
+                {a}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {errors.amenaza && <p className="text-sm text-destructive">{errors.amenaza}</p>}
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {TIMES.map(({ key, label }) => (
-          <div key={key}>
-            <label htmlFor={key} className="block text-sm font-medium">
-              {label}
-            </label>
-            <input
+          <div key={key} className="flex flex-col gap-1.5">
+            <Label htmlFor={key}>{label}</Label>
+            <Input
               id={key}
               type="number"
               min={0}
               value={times[key]}
               onChange={(e) => setTimes((prev) => ({ ...prev, [key]: e.target.value }))}
-              className="mt-1 w-full rounded border border-gray-300 p-2"
             />
-            {errors[key] && <p className="mt-1 text-sm text-red-600">{errors[key]}</p>}
+            {errors[key] && <p className="text-sm text-destructive">{errors[key]}</p>}
           </div>
         ))}
       </div>
 
-      <div>
-        <label htmlFor="obs" className="block text-sm font-medium">
-          Observaciones
-        </label>
-        <textarea
-          id="obs"
-          value={obs}
-          onChange={(e) => setObs(e.target.value)}
-          className="mt-1 w-full rounded border border-gray-300 p-2"
-        />
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="obs">Observaciones</Label>
+        <Textarea id="obs" value={obs} onChange={(e) => setObs(e.target.value)} />
       </div>
 
       <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
         {onCancel && (
-          <button
-            type="button"
-            onClick={onCancel}
-            className="w-full rounded border border-gray-300 px-4 py-2 sm:w-auto"
-          >
+          <Button type="button" variant="outline" onClick={onCancel} className="w-full sm:w-auto">
             Cancelar
-          </button>
+          </Button>
         )}
-        <button
-          type="submit"
-          disabled={submitting}
-          className="w-full rounded bg-blue-600 px-4 py-2 font-medium text-white disabled:opacity-50 sm:w-auto"
-        >
+        <Button type="submit" disabled={submitting} className="w-full sm:w-auto">
           {submitting ? "Guardando..." : "Guardar"}
-        </button>
+        </Button>
       </div>
     </form>
   );

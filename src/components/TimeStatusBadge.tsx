@@ -1,11 +1,12 @@
+import { Badge } from "@/components/ui/badge";
 import { AdversaryTimeState } from "@/lib/api";
 
 const STYLES: Record<AdversaryTimeState, string> = {
-  favorable: "bg-green-100 text-green-800",
-  ajustado: "bg-yellow-100 text-yellow-800",
-  limite: "bg-orange-100 text-orange-800",
-  desfavorable: "bg-red-100 text-red-800",
-  critico: "bg-red-200 text-red-900",
+  favorable: "bg-green-500/15 text-green-400 border-green-500/30",
+  ajustado: "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
+  limite: "bg-orange-500/15 text-orange-400 border-orange-500/30",
+  desfavorable: "bg-red-500/15 text-red-400 border-red-500/30",
+  critico: "bg-red-600/20 text-red-300 border-red-600/40",
 };
 
 const LABELS: Record<AdversaryTimeState, string> = {
@@ -18,8 +19,8 @@ const LABELS: Record<AdversaryTimeState, string> = {
 
 export function TimeStatusBadge({ estado }: { estado: AdversaryTimeState }) {
   return (
-    <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${STYLES[estado]}`}>
+    <Badge variant="outline" className={STYLES[estado]}>
       {LABELS[estado]}
-    </span>
+    </Badge>
   );
 }

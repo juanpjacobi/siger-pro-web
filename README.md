@@ -13,10 +13,12 @@ Frontend de SIGER-PRO, plataforma de evaluación de riesgo de seguridad física.
 ```bash
 npm install
 cp .env.local.example .env.local   # ajustar NEXT_PUBLIC_API_URL si la API no corre en localhost:3333
-npm run dev                        # http://localhost:3000
+npm run dev                        # http://localhost:3001
 ```
 
-La API (`siger-pro-api`) debe estar corriendo aparte (`npm run start:dev` en ese repo) para que las pantallas tengan datos.
+La API (`siger-pro-api`) debe estar corriendo aparte (`npm run start:dev` en ese repo, puerto 3333) para que las pantallas tengan datos.
+
+> Puerto 3001 y no el 3000 por defecto de Next: en esta PC el puerto 3000 lo ocupa un servicio de Windows (`FlexxusLocalLicenseServer`), que pisa al servidor de Next y deja la página en blanco si se usa ese puerto.
 
 ## Tests
 

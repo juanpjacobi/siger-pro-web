@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SIGER-PRO — Frontend (Next.js)
 
-## Getting Started
+Frontend de SIGER-PRO, plataforma de evaluación de riesgo de seguridad física. Consume la API de `siger-pro-api` (repo backend separado).
 
-First, run the development server:
+## Stack
+
+- Next.js 14 (App Router) + TypeScript
+- Tailwind CSS v4, mobile-first
+- Jest + React Testing Library para tests de componente
+
+## Desarrollo
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.local.example .env.local   # ajustar NEXT_PUBLIC_API_URL si la API no corre en localhost:3333
+npm run dev                        # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+La API (`siger-pro-api`) debe estar corriendo aparte (`npm run start:dev` en ese repo) para que las pantallas tengan datos.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tests
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run test          # una corrida
+npm run test:watch    # modo watch
+```
 
-## Learn More
+## Build
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Estructura
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+  app/                rutas (App Router)
+  components/          componentes de UI + sus tests (__tests__/)
+  lib/api.ts           cliente tipado de la API del backend
+specs/                  specs de cada módulo de UI, una por módulo migrado
+```
 
-## Deploy on Vercel
+## Convención de módulos
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Cada módulo de negocio se construye en paralelo con su contraparte de backend (ver `siger-pro-api/specs/MODULES_CHECKLIST.md`). El spec de cada módulo de UI vive en `specs/<modulo>-ui.md` y referencia el contrato de API del spec equivalente del backend.

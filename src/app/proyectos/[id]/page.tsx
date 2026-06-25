@@ -113,7 +113,11 @@ export default function ProyectoDetailPage() {
               {[project.cliente, project.tipo, project.ubicacion].filter(Boolean).join(" · ")}
             </p>
           </div>
-          <Button variant="outline" render={<Link href={`/proyectos/${projectId}/editar`} />}>
+          <Button
+            variant="outline"
+            render={<Link href={`/proyectos/${projectId}/editar`} />}
+            nativeButton={false}
+          >
             <Pencil className="size-4" />
             Editar
           </Button>
@@ -141,7 +145,7 @@ export default function ProyectoDetailPage() {
           )}
 
           {moslerEntries === null ? (
-            <p className="text-sm text-muted-foreground">Cargando...</p>
+            !error && <p className="text-sm text-muted-foreground">Cargando...</p>
           ) : (
             <MoslerList entries={moslerEntries} onEdit={setEditingMosler} onDelete={handleMoslerDelete} />
           )}
@@ -162,7 +166,7 @@ export default function ProyectoDetailPage() {
           )}
 
           {adversaryEntries === null ? (
-            <p className="text-sm text-muted-foreground">Cargando...</p>
+            !error && <p className="text-sm text-muted-foreground">Cargando...</p>
           ) : (
             <AdversaryTimeList entries={adversaryEntries} onEdit={setEditingTime} onDelete={handleTimeDelete} />
           )}

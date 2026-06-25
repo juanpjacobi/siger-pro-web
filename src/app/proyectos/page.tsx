@@ -22,7 +22,7 @@ export default function ProyectosPage() {
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
       <div className="flex items-center justify-between gap-3">
         <h1 className="text-2xl font-bold">Proyectos</h1>
-        <Button render={<Link href="/proyectos/nuevo" />}>
+        <Button render={<Link href="/proyectos/nuevo" />} nativeButton={false}>
           <Plus className="size-4" />
           Nuevo
         </Button>
@@ -34,7 +34,7 @@ export default function ProyectosPage() {
         </p>
       )}
 
-      {projects === null && <p className="text-sm text-muted-foreground">Cargando proyectos...</p>}
+      {projects === null && !error && <p className="text-sm text-muted-foreground">Cargando proyectos...</p>}
 
       {projects && projects.length === 0 && (
         <p className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">

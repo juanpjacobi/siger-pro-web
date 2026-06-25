@@ -45,4 +45,8 @@ specs/                  specs de cada módulo de UI, una por módulo migrado
 
 ## Convención de módulos
 
-Cada módulo de negocio se construye en paralelo con su contraparte de backend (ver `siger-pro-api/specs/MODULES_CHECKLIST.md`). El spec de cada módulo de UI vive en `specs/<modulo>-ui.md` y referencia el contrato de API del spec equivalente del backend.
+Cada módulo de negocio se construye en paralelo con su contraparte de backend (ver `siger-pro-api/specs/MODULES_CHECKLIST.md`). El spec de cada módulo de UI vive en `specs/<modulo>-ui.md`, se escribe **antes** del código (estado `propuesto`) y referencia el contrato de API del spec equivalente del backend.
+
+## Flujo spec-driven + TDD (agentes)
+
+Igual que el backend, este repo tiene su propio ciclo spec → TDD → review en `.claude/agents/` (`spec-writer-ui`, `developer-ui`, `reviewer-ui`) orquestado por el skill `/feature-ui <modulo>`. Requiere que el módulo ya esté aprobado del lado del backend (`BE [x]` en el checklist).

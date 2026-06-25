@@ -3,6 +3,8 @@
 Estado: implementado y aprobado (verificado: build + tests en verde).
 Repo: `seguridad-web` (frontend). Contraparte de backend: `siger-pro-api` → `specs/proyectos.md`.
 
+> Actualizado 2026-06-25: se introduce el concepto de "proyecto activo" en el sidebar (ver §2 y §6). El sidebar deja de ser estático: cuando la URL está dentro de `/proyectos/[id]/...`, los módulos de "Análisis" que ya existen (Mosler, Tiempos) se habilitan apuntando a ese proyecto, y el header del sidebar muestra el nombre del proyecto activo con un link para cambiarlo (vuelve a `/proyectos`). No se usa un selector global de proyecto (estado en memoria/localStorage) — el contexto vive en la URL, vía `usePathname()` + el mismo hook `useProject(id)` que ya usan las páginas (TanStack Query deduplica el fetch). Decisión tomada explícitamente para no replicar el selector global del legado, que mezclaba el estado del proyecto activo con el resto de la app.
+
 ## 1. Propósito
 
 Proyecto es la entidad raíz de todo el sistema. Esta UI reemplaza el form inline que vivía en `/proyectos` (correcto cuando el modelo era un stub de 2 campos, ya no escala a los ~18 campos reales del legado) por un flujo de alta/edición en páginas separadas, dejando la lista limpia.
@@ -13,7 +15,8 @@ Proyecto es la entidad raíz de todo el sistema. Esta UI reemplaza el form inlin
 |---|---|
 | `/proyectos` | Lista de proyectos (solo lectura) + botón "Nuevo" |
 | `/proyectos/nuevo` | Form completo de alta. Al guardar, redirige a `/proyectos/:id` |
-| `/proyectos/:id` | Detalle: header con nombre/cliente/tipo/ubicación + botón "Editar", debajo los tabs de Mosler/Tiempos Adversario (sin cambios respecto al spec anterior) |
+| `/proyectos/:id` | Resumen del proyecto: header (nombre/cliente/tipo/ubicación + botón "Editar") + cards de acceso a sus módulos (Mosler, Tiempos Adversario) |
+| `/proyectos/:id/mosler`, `/proyectos/:id/tiempos` | Módulos del proyecto, como rutas propias (ya no son tabs en una sola página, ver `mosler-tiempos-ui.md`) — comparten `layout.tsx` con el header y la navegación secundaria |
 | `/proyectos/:id/editar` | Mismo form que "nuevo", precargado con los datos del proyecto. Al guardar, redirige a `/proyectos/:id` |
 
 ## 3. Contrato de API consumido
@@ -36,6 +39,16 @@ Proyecto es la entidad raíz de todo el sistema. Esta UI reemplaza el form inlin
 3. `ProjectForm` con `initial` precarga todos los campos, incluida la fecha en formato `YYYY-MM-DD` para el `<input type="date">`.
 4. `npm run build` compila sin errores.
 
-## 6. Fuera de alcance de este spec
+## 6. Sidebar contextual ("proyecto activo")
+
+`src/components/app-sidebar.tsx` deriva el proyecto activo de la URL actual (`usePathname()` con regex `^/proyectos/([^/]+)`, excluyendo `/proyectos/nuevo`), no de un estado global:
+
+- Sin proyecto activo: los ítems de módulos por-proyecto (hoy Mosler/Tiempos, después el resto del checklist) quedan deshabilitados (`disabled`, sin `href`).
+- Con proyecto activo: esos ítems apuntan a `/proyectos/<id>/<modulo>`, y el header del sidebar muestra el nombre del proyecto (vía `useProject(id)`, mismo hook que usan las páginas — cache compartida, no se duplica el fetch) con un link "Cambiar" que vuelve a `/proyectos`.
+- Los grupos "Relevamiento"/"Resultados" siguen deshabilitados independientemente del proyecto activo hasta que esos módulos existan — no es un problema de contexto, es que la página todavía no está construida.
+
+Cada módulo nuevo que se agregue al checklist debe registrar su entrada en `buildNavGroups()` con `href: projectScoped("/<modulo>")` en vez de un `href` fijo, para mantener este comportamiento.
+
+## 7. Fuera de alcance de este spec
 
 Validación de formato de campos numéricos más allá de "es un número" (rangos, etc.) — no la pide el legado tampoco. Confirmación antes de navegar fuera del form con cambios sin guardar (UX deseable, no crítico ahora).

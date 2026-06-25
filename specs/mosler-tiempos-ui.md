@@ -3,6 +3,8 @@
 Estado: implementado y aprobado (verificado: build + tests en verde + consumo real contra la API local).
 Repo: `seguridad-web` (frontend). Contraparte de backend: `siger-pro-api` → `specs/mosler-tiempos.md`.
 
+> Actualizado 2026-06-25: Mosler y Tiempos Adversario dejaron de ser `Tabs` dentro de `/proyectos/[id]` y pasaron a ser rutas propias (`/proyectos/[id]/mosler`, `/proyectos/[id]/tiempos`), como parte de la reestructuración de navegación que introdujo el concepto de "proyecto activo" en el sidebar (ver `proyectos-ui.md` §2). Cambio de arquitectura de navegación, no de lógica de negocio — fórmulas y contrato de API sin cambios.
+
 ## 1. Propósito
 
 Primera pantalla de negocio del frontend. Permite, dentro de un proyecto, cargar y revisar las amenazas evaluadas con el método Mosler y los escenarios de Tiempos Adversario, viendo siempre el cálculo (nivel de riesgo / favorable-desfavorable) que ya hace el backend — la UI no calcula nada, solo muestra lo que devuelve la API.
@@ -12,8 +14,12 @@ Primera pantalla de negocio del frontend. Permite, dentro de un proyecto, cargar
 | Ruta | Qué muestra |
 |---|---|
 | `/` | Redirige a `/proyectos` |
-| `/proyectos` | Lista de proyectos + form para crear uno nuevo |
-| `/proyectos/[id]` | Detalle de un proyecto: tabs/secciones "Mosler" y "Tiempos Adversario" |
+| `/proyectos` | Lista de proyectos + botón "Nuevo" |
+| `/proyectos/[id]` | Resumen del proyecto: header + cards de acceso a sus módulos |
+| `/proyectos/[id]/mosler` | Matriz Mosler de ese proyecto |
+| `/proyectos/[id]/tiempos` | Tiempos Adversario de ese proyecto |
+
+`/proyectos/[id]/layout.tsx` es compartido entre las tres últimas rutas: muestra el header del proyecto (nombre, cliente/tipo/ubicación, botón Editar) y una navegación secundaria (Resumen / Matriz Mosler / Tiempos Adversario) con estado activo según la ruta actual.
 
 No hay rutas separadas por entrada individual (no `/proyectos/[id]/mosler/[entryId]`): alta/edición de una entrada se hace en un modal/panel dentro de la misma pantalla, para minimizar navegación en mobile.
 
@@ -41,8 +47,9 @@ Tailwind CSS v4. Regla del proyecto: **toda clase responsive se escribe para mob
 
 ```
 src/
-  lib/
-    api.ts            cliente fetch tipado (projects, mosler, adversaryTime, catalogs)
+  lib/api/
+    mosler.ts            tipos + cliente + hooks de TanStack Query
+    adversary-time.ts     idem
   components/
     RiskBadge.tsx      badge de color segun nivel Mosler (Bajo/Medio/Alto/Critico)
     TimeStatusBadge.tsx badge de color segun estado de tiempos (favorable..critico)
@@ -52,7 +59,10 @@ src/
     AdversaryTimeList.tsx
   app/
     proyectos/page.tsx
-    proyectos/[id]/page.tsx
+    proyectos/[id]/layout.tsx   header del proyecto + nav secundaria
+    proyectos/[id]/page.tsx     resumen
+    proyectos/[id]/mosler/page.tsx
+    proyectos/[id]/tiempos/page.tsx
 ```
 
 ## 6. Estados a manejar en cada pantalla

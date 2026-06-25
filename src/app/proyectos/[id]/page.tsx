@@ -1,5 +1,7 @@
 "use client";
 
+import { Pencil } from "lucide-react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AdversaryTimeForm } from "@/components/AdversaryTimeForm";
@@ -13,6 +15,7 @@ import {
   AdversaryTimeInput,
   MoslerEntry,
   MoslerInput,
+  Project,
   api,
 } from "@/lib/api";
 
@@ -27,12 +30,18 @@ export default function ProyectoDetailPage() {
   const params = useParams<{ id: string }>();
   const projectId = params.id;
 
+  const [project, setProject] = useState<Project | null>(null);
   const [catalogs, setCatalogs] = useState<Catalogs | null>(null);
   const [moslerEntries, setMoslerEntries] = useState<MoslerEntry[] | null>(null);
   const [adversaryEntries, setAdversaryEntries] = useState<AdversaryTimeEntry[] | null>(null);
   const [editingMosler, setEditingMosler] = useState<MoslerEntry | "new" | null>(null);
   const [editingTime, setEditingTime] = useState<AdversaryTimeEntry | "new" | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!projectId) return;
+    api.projects.get(projectId).then(setProject).catch(() => setError("No se pudo cargar el proyecto."));
+  }, [projectId]);
 
   useEffect(() => {
     Promise.all([
@@ -94,6 +103,21 @@ export default function ProyectoDetailPage() {
         <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
           {error}
         </p>
+      )}
+
+      {project && (
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-bold">{project.nombre}</h1>
+            <p className="text-sm text-muted-foreground">
+              {[project.cliente, project.tipo, project.ubicacion].filter(Boolean).join(" · ")}
+            </p>
+          </div>
+          <Button variant="outline" render={<Link href={`/proyectos/${projectId}/editar`} />}>
+            <Pencil className="size-4" />
+            Editar
+          </Button>
+        </div>
       )}
 
       <Tabs defaultValue="mosler">

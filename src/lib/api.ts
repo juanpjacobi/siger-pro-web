@@ -4,13 +4,45 @@ export interface Project {
   id: string;
   nombre: string;
   cliente: string | null;
+  tipo: string | null;
+  ubicacion: string | null;
+  fecha: string | null;
+  profesional: string | null;
+  empresa: string | null;
+  responsable: string | null;
+  superficie: string | null;
+  perimetro: string | null;
+  lotes: number | null;
+  habitantes: number | null;
+  accesos: number | null;
+  alcance: string | null;
+  exclusiones: string | null;
+  normativa: string | null;
+  criterioAceptacion: string | null;
+  obs: string | null;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface CreateProjectInput {
+export interface ProjectInput {
   nombre: string;
   cliente?: string;
+  tipo?: string;
+  ubicacion?: string;
+  fecha?: string;
+  profesional?: string;
+  empresa?: string;
+  responsable?: string;
+  superficie?: number;
+  perimetro?: number;
+  lotes?: number;
+  habitantes?: number;
+  accesos?: number;
+  alcance?: string;
+  exclusiones?: string;
+  normativa?: string;
+  criterioAceptacion?: string;
+  obs?: string;
 }
 
 export type RiskLevel = "Bajo" | "Medio" | "Alto" | "Critico";
@@ -130,8 +162,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 export const api = {
   projects: {
     list: () => request<Project[]>("/projects"),
-    create: (input: CreateProjectInput) =>
-      request<Project>("/projects", { method: "POST", body: JSON.stringify(input) }),
+    get: (id: string) => request<Project>(`/projects/${id}`),
+    create: (input: ProjectInput) => request<Project>("/projects", { method: "POST", body: JSON.stringify(input) }),
+    update: (id: string, input: Partial<ProjectInput>) =>
+      request<Project>(`/projects/${id}`, { method: "PATCH", body: JSON.stringify(input) }),
   },
   mosler: {
     list: (projectId: string) => request<MoslerEntry[]>(`/projects/${projectId}/mosler`),

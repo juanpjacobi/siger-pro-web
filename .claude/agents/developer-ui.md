@@ -11,7 +11,8 @@ Sos el developer de frontend del proyecto SIGER-PRO (repo `seguridad-web`, sin b
 
 - Next.js 14 App Router + TypeScript, Tailwind CSS v4, shadcn/ui (componentes en `src/components/ui/`, instalados con `npx shadcn@latest add <componente>` si falta alguno).
 - Tema oscuro forzado (`dark` en `<html>`, ver `src/app/layout.tsx`), acento cian, sidebar persistente (`src/components/app-sidebar.tsx`) — si el módulo ya tiene ruta implementada, agregala a `NAV_GROUPS` ahí mismo.
-- Cliente de API tipado en `src/lib/api.ts` — extendé ese archivo (nuevos tipos + métodos bajo `api.<modulo>`), no creés un cliente fetch paralelo.
+- Cliente de API: un archivo por feature bajo `src/lib/api/` (ej. `projects.ts`, `mosler.ts`), cada uno exporta sus interfaces (`Entity`, `EntityInput`), un objeto `<modulo>Api` con los métodos REST crudos, y hooks de TanStack Query (`use<Entidad>`, `use<Entidad>es`, `useCreate<Entidad>`, `useUpdate<Entidad>`, `useDelete<Entidad>`). Para un módulo nuevo: creá `src/lib/api/<modulo>.ts` siguiendo `projects.ts`/`mosler.ts` como plantilla, y agregalo a `src/lib/api/index.ts` (re-export `*` + sumarlo al objeto `api` si necesita namespace tipo `api.<modulo>`). **No** uses `useEffect` + `fetch` a mano en componentes — siempre vía un hook de `lib/api/`.
+- `QueryProvider` (`src/lib/query-provider.tsx`) ya envuelve toda la app desde `src/app/layout.tsx` — no hace falta agregarlo de nuevo.
 - Mobile-first: listas son cards apiladas en mobile (`md:hidden`) y tabla desde `md:` (`hidden md:block` + componente `Table` de shadcn) — copiá el patrón de `MoslerList.tsx`/`AdversaryTimeList.tsx`.
 - Forms: un componente compartido entre alta y edición, recibe `initial?: T` y `onSubmit` — copiá el patrón de `ProjectForm.tsx`/`MoslerForm.tsx`. Selects de shadcn (`@/components/ui/select`) usan `render`/`onValueChange` de Base UI, no `<select>` nativo — si el botón usa `render={<Link .../>}`, agregale `nativeButton={false}` (bug ya encontrado una vez).
 - Botones primarios full-width en mobile (`w-full sm:w-auto`).
@@ -27,7 +28,7 @@ Sos el developer de frontend del proyecto SIGER-PRO (repo `seguridad-web`, sin b
 
 - No te salgas del spec. Si ves una mejora posible que no está pedida, mencionala al final como sugerencia, no la implementes.
 - No dupliques lógica de cálculo en el frontend — todo cálculo (Mosler, tiempos, lo que venga) lo hace el backend; la UI solo muestra lo que la API devuelve.
-- Nunca muestres el estado "cargando" junto con un mensaje de error (bug ya corregido una vez en Proyectos/Mosler/Tiempos) — el loading debe condicionarse a `dato === null && !error`.
+- Nunca muestres el estado "cargando" junto con un mensaje de error — con TanStack Query, condicionar el loading a `data === undefined && !isError` (el equivalente del bug ya corregido una vez en Proyectos/Mosler/Tiempos cuando esto era manual).
 - Si el spec tiene una sección "Fuera de alcance", respetala literalmente.
 - Si encontrás que el spec de UI no coincide con el contrato real de `../seguridad/specs/<modulo>.md` (campo que no existe, endpoint que no es el que dice), no lo "corrijas" en silencio — avisá, puede ser un error del spec que hay que arreglar antes de seguir (volver a `spec-writer-ui`).
 

@@ -6,6 +6,7 @@ Frontend de SIGER-PRO, plataforma de evaluación de riesgo de seguridad física.
 
 - Next.js 14 (App Router) + TypeScript
 - Tailwind CSS v4, mobile-first
+- TanStack Query para data-fetching (cache, loading/error, invalidación tras mutar) — ver `src/lib/api/`
 - Jest + React Testing Library para tests de componente
 
 ## Desarrollo
@@ -37,9 +38,10 @@ npm run build
 
 ```
 src/
-  app/                rutas (App Router)
-  components/          componentes de UI + sus tests (__tests__/)
-  lib/api.ts           cliente tipado de la API del backend
+  app/                  rutas (App Router)
+  components/           componentes de UI + sus tests (__tests__/)
+  lib/api/              un archivo por feature (projects.ts, mosler.ts...): tipos + cliente + hooks de TanStack Query
+  lib/query-provider.tsx  QueryClientProvider, montado en app/layout.tsx
 specs/                  specs de cada módulo de UI, una por módulo migrado
 ```
 

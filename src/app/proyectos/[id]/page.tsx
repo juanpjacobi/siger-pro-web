@@ -3,7 +3,7 @@
 import { Pencil } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AdversaryTimeForm } from "@/components/AdversaryTimeForm";
 import { AdversaryTimeList } from "@/components/AdversaryTimeList";
 import { MoslerForm } from "@/components/MoslerForm";
@@ -15,86 +15,74 @@ import {
   AdversaryTimeInput,
   MoslerEntry,
   MoslerInput,
-  Project,
-  api,
+  useAdversaryTimeEntries,
+  useCatalog,
+  useCreateAdversaryTimeEntry,
+  useCreateMoslerEntry,
+  useDeleteAdversaryTimeEntry,
+  useDeleteMoslerEntry,
+  useMoslerEntries,
+  useProject,
+  useUpdateAdversaryTimeEntry,
+  useUpdateMoslerEntry,
 } from "@/lib/api";
-
-interface Catalogs {
-  amenazas: string[];
-  tiposMedida: string[];
-  residuales: string[];
-  estadosMedida: string[];
-}
 
 export default function ProyectoDetailPage() {
   const params = useParams<{ id: string }>();
   const projectId = params.id;
 
-  const [project, setProject] = useState<Project | null>(null);
-  const [catalogs, setCatalogs] = useState<Catalogs | null>(null);
-  const [moslerEntries, setMoslerEntries] = useState<MoslerEntry[] | null>(null);
-  const [adversaryEntries, setAdversaryEntries] = useState<AdversaryTimeEntry[] | null>(null);
+  const { data: project, isError: projectError } = useProject(projectId);
+  const { data: amenazas, isError: amenazasError } = useCatalog("mosler_amenaza");
+  const { data: tiposMedida, isError: tiposMedidaError } = useCatalog("mosler_tipoMedida");
+  const { data: residuales, isError: residualesError } = useCatalog("mosler_residual");
+  const { data: estadosMedida, isError: estadosMedidaError } = useCatalog("mosler_estadoMedida");
+  const catalogs =
+    amenazas && tiposMedida && residuales && estadosMedida
+      ? { amenazas, tiposMedida, residuales, estadosMedida }
+      : null;
+
+  const { data: moslerEntries, isError: moslerError } = useMoslerEntries(projectId);
+  const createMosler = useCreateMoslerEntry(projectId);
+  const updateMosler = useUpdateMoslerEntry(projectId);
+  const deleteMosler = useDeleteMoslerEntry(projectId);
+
+  const { data: adversaryEntries, isError: adversaryError } = useAdversaryTimeEntries(projectId);
+  const createAdversaryTime = useCreateAdversaryTimeEntry(projectId);
+  const updateAdversaryTime = useUpdateAdversaryTimeEntry(projectId);
+  const deleteAdversaryTime = useDeleteAdversaryTimeEntry(projectId);
+
   const [editingMosler, setEditingMosler] = useState<MoslerEntry | "new" | null>(null);
   const [editingTime, setEditingTime] = useState<AdversaryTimeEntry | "new" | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!projectId) return;
-    api.projects.get(projectId).then(setProject).catch(() => setError("No se pudo cargar el proyecto."));
-  }, [projectId]);
-
-  useEffect(() => {
-    Promise.all([
-      api.catalogs.get("mosler_amenaza"),
-      api.catalogs.get("mosler_tipoMedida"),
-      api.catalogs.get("mosler_residual"),
-      api.catalogs.get("mosler_estadoMedida"),
-    ])
-      .then(([amenazas, tiposMedida, residuales, estadosMedida]) =>
-        setCatalogs({ amenazas, tiposMedida, residuales, estadosMedida }),
-      )
-      .catch(() => setError("No se pudieron cargar los catalogos."));
-  }, []);
-
-  useEffect(() => {
-    if (!projectId) return;
-    api.mosler.list(projectId).then(setMoslerEntries).catch(() => setError("No se pudo cargar la matriz Mosler."));
-    api.adversaryTime
-      .list(projectId)
-      .then(setAdversaryEntries)
-      .catch(() => setError("No se pudieron cargar los tiempos adversario."));
-  }, [projectId]);
+  const error =
+    projectError || amenazasError || tiposMedidaError || residualesError || estadosMedidaError
+      ? "No se pudo cargar el proyecto o sus catalogos."
+      : null;
 
   async function handleMoslerSubmit(input: MoslerInput) {
     if (editingMosler && editingMosler !== "new") {
-      const updated = await api.mosler.update(projectId, editingMosler.id, input);
-      setMoslerEntries((prev) => prev?.map((e) => (e.id === updated.id ? updated : e)) ?? null);
+      await updateMosler.mutateAsync({ id: editingMosler.id, input });
     } else {
-      const created = await api.mosler.create(projectId, input);
-      setMoslerEntries((prev) => [...(prev ?? []), created]);
+      await createMosler.mutateAsync(input);
     }
     setEditingMosler(null);
   }
 
   async function handleMoslerDelete(entry: MoslerEntry) {
-    await api.mosler.remove(projectId, entry.id);
-    setMoslerEntries((prev) => prev?.filter((e) => e.id !== entry.id) ?? null);
+    await deleteMosler.mutateAsync(entry.id);
   }
 
   async function handleTimeSubmit(input: AdversaryTimeInput) {
     if (editingTime && editingTime !== "new") {
-      const updated = await api.adversaryTime.update(projectId, editingTime.id, input);
-      setAdversaryEntries((prev) => prev?.map((e) => (e.id === updated.id ? updated : e)) ?? null);
+      await updateAdversaryTime.mutateAsync({ id: editingTime.id, input });
     } else {
-      const created = await api.adversaryTime.create(projectId, input);
-      setAdversaryEntries((prev) => [...(prev ?? []), created]);
+      await createAdversaryTime.mutateAsync(input);
     }
     setEditingTime(null);
   }
 
   async function handleTimeDelete(entry: AdversaryTimeEntry) {
-    await api.adversaryTime.remove(projectId, entry.id);
-    setAdversaryEntries((prev) => prev?.filter((e) => e.id !== entry.id) ?? null);
+    await deleteAdversaryTime.mutateAsync(entry.id);
   }
 
   return (
@@ -144,8 +132,8 @@ export default function ProyectoDetailPage() {
             </Button>
           )}
 
-          {moslerEntries === null ? (
-            !error && <p className="text-sm text-muted-foreground">Cargando...</p>
+          {moslerEntries === undefined ? (
+            !moslerError && <p className="text-sm text-muted-foreground">Cargando...</p>
           ) : (
             <MoslerList entries={moslerEntries} onEdit={setEditingMosler} onDelete={handleMoslerDelete} />
           )}
@@ -165,8 +153,8 @@ export default function ProyectoDetailPage() {
             </Button>
           )}
 
-          {adversaryEntries === null ? (
-            !error && <p className="text-sm text-muted-foreground">Cargando...</p>
+          {adversaryEntries === undefined ? (
+            !adversaryError && <p className="text-sm text-muted-foreground">Cargando...</p>
           ) : (
             <AdversaryTimeList entries={adversaryEntries} onEdit={setEditingTime} onDelete={handleTimeDelete} />
           )}

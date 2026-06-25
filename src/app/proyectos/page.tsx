@@ -2,21 +2,12 @@
 
 import { Building2, Plus } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ApiError, Project, api } from "@/lib/api";
+import { useProjects } from "@/lib/api";
 
 export default function ProyectosPage() {
-  const [projects, setProjects] = useState<Project[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    api.projects
-      .list()
-      .then(setProjects)
-      .catch((e: unknown) => setError(e instanceof ApiError ? e.message : "No se pudo cargar la lista de proyectos."));
-  }, []);
+  const { data: projects, isError } = useProjects();
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
@@ -28,13 +19,15 @@ export default function ProyectosPage() {
         </Button>
       </div>
 
-      {error && (
+      {isError && (
         <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
-          {error}
+          No se pudo cargar la lista de proyectos.
         </p>
       )}
 
-      {projects === null && !error && <p className="text-sm text-muted-foreground">Cargando proyectos...</p>}
+      {projects === undefined && !isError && (
+        <p className="text-sm text-muted-foreground">Cargando proyectos...</p>
+      )}
 
       {projects && projects.length === 0 && (
         <p className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">

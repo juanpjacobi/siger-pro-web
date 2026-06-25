@@ -1,35 +1,32 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { ProjectForm } from "@/components/ProjectForm";
-import { ApiError, Project, ProjectInput, api } from "@/lib/api";
+import { ApiError, ProjectInput, useCatalog, useProject, useUpdateProject } from "@/lib/api";
 
 export default function EditarProyectoPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const projectId = params.id;
 
-  const [project, setProject] = useState<Project | null>(null);
-  const [tipos, setTipos] = useState<string[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    api.projects.get(projectId).then(setProject).catch(() => setError("No se pudo cargar el proyecto."));
-    api.catalogs
-      .get("proyecto_tipo")
-      .then(setTipos)
-      .catch(() => setError("No se pudo cargar el catalogo de tipos de objetivo."));
-  }, [projectId]);
+  const { data: project, isError: projectError } = useProject(projectId);
+  const { data: tipos, isError: catalogError } = useCatalog("proyecto_tipo");
+  const updateProject = useUpdateProject(projectId);
 
   async function handleSubmit(input: ProjectInput) {
-    try {
-      await api.projects.update(projectId, input);
-      router.push(`/proyectos/${projectId}`);
-    } catch (e) {
-      setError(e instanceof ApiError ? e.message : "No se pudo actualizar el proyecto.");
-    }
+    await updateProject.mutateAsync(input);
+    router.push(`/proyectos/${projectId}`);
   }
+
+  const error = projectError
+    ? "No se pudo cargar el proyecto."
+    : catalogError
+      ? "No se pudo cargar el catalogo de tipos de objetivo."
+      : updateProject.isError
+        ? updateProject.error instanceof ApiError
+          ? updateProject.error.message
+          : "No se pudo actualizar el proyecto."
+        : null;
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
@@ -43,7 +40,7 @@ export default function EditarProyectoPage() {
 
       {project ? (
         <ProjectForm
-          tipos={tipos}
+          tipos={tipos ?? []}
           initial={project}
           onSubmit={handleSubmit}
           onCancel={() => router.push(`/proyectos/${projectId}`)}

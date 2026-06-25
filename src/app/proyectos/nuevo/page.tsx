@@ -1,30 +1,26 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { ProjectForm } from "@/components/ProjectForm";
-import { ApiError, ProjectInput, api } from "@/lib/api";
+import { ApiError, ProjectInput, useCatalog, useCreateProject } from "@/lib/api";
 
 export default function NuevoProyectoPage() {
   const router = useRouter();
-  const [tipos, setTipos] = useState<string[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    api.catalogs
-      .get("proyecto_tipo")
-      .then(setTipos)
-      .catch(() => setError("No se pudo cargar el catalogo de tipos de objetivo."));
-  }, []);
+  const { data: tipos, error: catalogError } = useCatalog("proyecto_tipo");
+  const createProject = useCreateProject();
 
   async function handleSubmit(input: ProjectInput) {
-    try {
-      const project = await api.projects.create(input);
-      router.push(`/proyectos/${project.id}`);
-    } catch (e) {
-      setError(e instanceof ApiError ? e.message : "No se pudo crear el proyecto.");
-    }
+    const project = await createProject.mutateAsync(input);
+    router.push(`/proyectos/${project.id}`);
   }
+
+  const error = catalogError
+    ? "No se pudo cargar el catalogo de tipos de objetivo."
+    : createProject.isError
+      ? createProject.error instanceof ApiError
+        ? createProject.error.message
+        : "No se pudo crear el proyecto."
+      : null;
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
@@ -36,7 +32,7 @@ export default function NuevoProyectoPage() {
         </p>
       )}
 
-      <ProjectForm tipos={tipos} onSubmit={handleSubmit} onCancel={() => router.push("/proyectos")} />
+      <ProjectForm tipos={tipos ?? []} onSubmit={handleSubmit} onCancel={() => router.push("/proyectos")} />
     </div>
   );
 }

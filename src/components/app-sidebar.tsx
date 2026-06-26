@@ -70,7 +70,7 @@ function buildNavGroups(projectId: string | null): NavGroup[] {
       label: "Relevamiento",
       items: [
         { label: "Datos Generales", icon: Building2 },
-        { label: "Activos Protegidos", icon: ShieldAlert },
+        { label: "Activos Protegidos", href: projectScoped("/activos"), icon: ShieldAlert },
         { label: "Entorno", icon: Trees },
         { label: "CPTED", icon: Lightbulb },
         { label: "Perimetro", icon: Grid3x3 },

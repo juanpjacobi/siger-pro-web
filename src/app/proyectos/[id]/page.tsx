@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock, FileText, Grid3x3 } from "lucide-react";
+import { Clock, FileText, Grid3x3, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,6 +23,12 @@ const MODULES = [
     suffix: "/metodologia",
     icon: FileText,
     description: "Enfoques metodologicos aplicados en el informe",
+  },
+  {
+    label: "Activos Protegidos",
+    suffix: "/activos",
+    icon: ShieldAlert,
+    description: "Que se protege: personas, bienes, infraestructura, sistemas, informacion",
   },
 ];
 

@@ -5,14 +5,6 @@ import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useProject } from "@/lib/api";
-import { cn } from "@/lib/utils";
-
-const TABS = [
-  { label: "Resumen", suffix: "" },
-  { label: "Matriz Mosler", suffix: "/mosler" },
-  { label: "Tiempos Adversario", suffix: "/tiempos" },
-  { label: "Marco Teorico", suffix: "/metodologia" },
-];
 
 export default function ProyectoLayout({ children }: { children: React.ReactNode }) {
   const params = useParams<{ id: string }>();
@@ -44,29 +36,6 @@ export default function ProyectoLayout({ children }: { children: React.ReactNode
             </Button>
           )}
         </div>
-      )}
-
-      {!isEditing && (
-        <nav className="flex gap-1 overflow-x-auto border-b">
-          {TABS.map((tab) => {
-            const href = `/proyectos/${projectId}${tab.suffix}`;
-            const active = pathname === href;
-            return (
-              <Link
-                key={tab.label}
-                href={href}
-                className={cn(
-                  "-mb-px shrink-0 whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition-colors",
-                  active
-                    ? "border-primary text-foreground"
-                    : "border-transparent text-muted-foreground hover:text-foreground",
-                )}
-              >
-                {tab.label}
-              </Link>
-            );
-          })}
-        </nav>
       )}
 
       {children}

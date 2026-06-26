@@ -11,18 +11,9 @@ Permite, dentro de un proyecto, revisar las 10 entradas de marco metodológico s
 
 | Ruta | Qué muestra |
 |---|---|
-| `/proyectos/[id]/metodologia` | Lista de las `MethodologyEntry` del proyecto (las 10 sembradas + las que el analista agregue), con toggle de `activo` inline y acceso a editar/agregar/borrar. Comparte `layout.tsx` con el resto de módulos por-proyecto (header del proyecto + nav secundaria, ver `proyectos-ui.md` §6 y `mosler-tiempos-ui.md` §2). |
+| `/proyectos/[id]/metodologia` | Lista de las `MethodologyEntry` del proyecto (las 10 sembradas + las que el analista agregue), con toggle de `activo` inline y acceso a editar/agregar/borrar. Comparte `layout.tsx` con el resto de módulos por-proyecto (solo header del proyecto — la navegación entre módulos es el sidebar, no una nav secundaria, ver `proyectos-ui.md` nota 2026-06-26). |
 
-Se agrega como cuarta tab en `TABS` (`src/app/proyectos/[id]/layout.tsx`), después de "Tiempos Adversario":
-
-```ts
-const TABS = [
-  { label: "Resumen", suffix: "" },
-  { label: "Matriz Mosler", suffix: "/mosler" },
-  { label: "Tiempos Adversario", suffix: "/tiempos" },
-  { label: "Marco Teorico", suffix: "/metodologia" },
-];
-```
+También se agrega como card de acceso en `/proyectos/[id]` (página de Resumen).
 
 En `src/components/app-sidebar.tsx`, el ítem "Marco Teorico" ya existe en el grupo "General" pero hoy está deshabilitado (sin `href`, ver línea 65 de `app-sidebar.tsx` al momento de escribir este spec). Pasa a usar `projectScoped("/metodologia")`, igual patrón que "Matriz Mosler"/"Tiempos Adversario" en el grupo "Analisis":
 

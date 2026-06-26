@@ -4,6 +4,8 @@ Estado: implementado y aprobado (verificado: build + tests en verde).
 Repo: `seguridad-web` (frontend). Contraparte de backend: `siger-pro-api` → `specs/proyectos.md`.
 
 > Actualizado 2026-06-25: se introduce el concepto de "proyecto activo" en el sidebar (ver §2 y §6). El sidebar deja de ser estático: cuando la URL está dentro de `/proyectos/[id]/...`, los módulos de "Análisis" que ya existen (Mosler, Tiempos) se habilitan apuntando a ese proyecto, y el header del sidebar muestra el nombre del proyecto activo con un link para cambiarlo (vuelve a `/proyectos`). No se usa un selector global de proyecto (estado en memoria/localStorage) — el contexto vive en la URL, vía `usePathname()` + el mismo hook `useProject(id)` que ya usan las páginas (TanStack Query deduplica el fetch). Decisión tomada explícitamente para no replicar el selector global del legado, que mezclaba el estado del proyecto activo con el resto de la app.
+>
+> Actualizado 2026-06-26: se quita la navegación secundaria (fila de tabs) de `/proyectos/[id]/layout.tsx` — quedaba redundante con el sidebar, que ya lista los módulos del proyecto activo y escala mejor a los ~20 módulos del checklist (una fila de tabs horizontal no escala igual). `layout.tsx` ahora solo pone el header del proyecto (nombre/cliente/tipo/ubicación + botón Editar); la navegación entre módulos vive únicamente en el sidebar. De paso se corrigió el cálculo de `isActive` del sidebar (antes usaba `startsWith` sin límite de borde, por lo que un módulo podía quedar marcado activo en una ruta hermana; ahora exige coincidencia exacta o el siguiente carácter `/`).
 
 ## 1. Propósito
 
@@ -16,7 +18,7 @@ Proyecto es la entidad raíz de todo el sistema. Esta UI reemplaza el form inlin
 | `/proyectos` | Lista de proyectos (solo lectura) + botón "Nuevo" |
 | `/proyectos/nuevo` | Form completo de alta. Al guardar, redirige a `/proyectos/:id` |
 | `/proyectos/:id` | Resumen del proyecto: header (nombre/cliente/tipo/ubicación + botón "Editar") + cards de acceso a sus módulos (Mosler, Tiempos Adversario) |
-| `/proyectos/:id/mosler`, `/proyectos/:id/tiempos` | Módulos del proyecto, como rutas propias (ya no son tabs en una sola página, ver `mosler-tiempos-ui.md`) — comparten `layout.tsx` con el header y la navegación secundaria |
+| `/proyectos/:id/mosler`, `/proyectos/:id/tiempos` | Módulos del proyecto, como rutas propias (ya no son tabs en una sola página, ver `mosler-tiempos-ui.md`) — comparten `layout.tsx` con el header del proyecto; la navegación entre módulos es solo el sidebar (ver nota 2026-06-26) |
 | `/proyectos/:id/editar` | Mismo form que "nuevo", precargado con los datos del proyecto. Al guardar, redirige a `/proyectos/:id` |
 
 ## 3. Contrato de API consumido

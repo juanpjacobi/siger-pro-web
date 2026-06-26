@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock, Grid3x3 } from "lucide-react";
+import { Clock, FileText, Grid3x3 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,6 +17,12 @@ const MODULES = [
     suffix: "/tiempos",
     icon: Clock,
     description: "Comparacion de tiempos de adversario vs. sistema de respuesta",
+  },
+  {
+    label: "Marco Teorico",
+    suffix: "/metodologia",
+    icon: FileText,
+    description: "Enfoques metodologicos aplicados en el informe",
   },
 ];
 

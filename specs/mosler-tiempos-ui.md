@@ -59,7 +59,7 @@ src/
     AdversaryTimeList.tsx
   app/
     proyectos/page.tsx
-    proyectos/[id]/layout.tsx   header del proyecto + nav secundaria
+    proyectos/[id]/layout.tsx   header del proyecto (la navegacion entre modulos es el sidebar, no una nav secundaria)
     proyectos/[id]/page.tsx     resumen
     proyectos/[id]/mosler/page.tsx
     proyectos/[id]/tiempos/page.tsx

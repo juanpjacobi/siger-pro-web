@@ -14,3 +14,13 @@ if (!Element.prototype.releasePointerCapture) {
 if (!Element.prototype.scrollIntoView) {
   Element.prototype.scrollIntoView = () => {};
 }
+// jsdom no implementa PointerEvent; Checkbox de Base UI lo usa en su manejador de click.
+if (typeof window !== "undefined" && !window.PointerEvent) {
+  class PointerEventPolyfill extends MouseEvent {
+    constructor(type: string, params: PointerEventInit = {}) {
+      super(type, params);
+    }
+  }
+  // @ts-expect-error - polyfill minimo para jsdom
+  window.PointerEvent = PointerEventPolyfill;
+}

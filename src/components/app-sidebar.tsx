@@ -62,7 +62,7 @@ function buildNavGroups(projectId: string | null): NavGroup[] {
       label: "General",
       items: [
         { label: "Proyectos", href: "/proyectos", icon: Building2 },
-        { label: "Marco Teorico", icon: FileText },
+        { label: "Marco Teorico", href: projectScoped("/metodologia"), icon: FileText },
         { label: "Configuracion", icon: Settings },
       ],
     },

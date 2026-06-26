@@ -11,6 +11,7 @@ const TABS = [
   { label: "Resumen", suffix: "" },
   { label: "Matriz Mosler", suffix: "/mosler" },
   { label: "Tiempos Adversario", suffix: "/tiempos" },
+  { label: "Marco Teorico", suffix: "/metodologia" },
 ];
 
 export default function ProyectoLayout({ children }: { children: React.ReactNode }) {

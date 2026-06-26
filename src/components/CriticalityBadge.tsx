@@ -9,7 +9,7 @@ const STYLES: Record<string, string> = {
 
 const FALLBACK_STYLE = "bg-muted text-muted-foreground border-border";
 
-export function AssetCriticalityBadge({ valor }: { valor: string | null | undefined }) {
+export function CriticalityBadge({ valor }: { valor: string | null | undefined }) {
   const style = (valor && STYLES[valor]) || FALLBACK_STYLE;
   const label = valor && STYLES[valor] ? valor : "Sin dato";
 

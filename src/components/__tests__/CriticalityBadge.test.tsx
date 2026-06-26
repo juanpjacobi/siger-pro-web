@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
-import { AssetCriticalityBadge } from "@/components/AssetCriticalityBadge";
+import { CriticalityBadge } from "@/components/CriticalityBadge";
 
-describe("AssetCriticalityBadge", () => {
+describe("CriticalityBadge", () => {
   const cases: { valor: string; colorClass: string }[] = [
     { valor: "Baja", colorClass: "bg-green-500/15" },
     { valor: "Media", colorClass: "bg-yellow-500/15" },
@@ -10,18 +10,18 @@ describe("AssetCriticalityBadge", () => {
   ];
 
   it.each(cases)("renderiza el valor $valor con su color", ({ valor, colorClass }) => {
-    render(<AssetCriticalityBadge valor={valor} />);
+    render(<CriticalityBadge valor={valor} />);
     const badge = screen.getByText(valor);
     expect(badge.className).toContain(colorClass);
   });
 
   it("renderiza un fallback neutral si el valor es vacio o no reconocido", () => {
-    render(<AssetCriticalityBadge valor="" />);
+    render(<CriticalityBadge valor="" />);
     expect(screen.getByText(/sin dato/i)).toBeInTheDocument();
   });
 
   it("renderiza un fallback neutral para un valor no reconocido", () => {
-    render(<AssetCriticalityBadge valor="Inexistente" />);
+    render(<CriticalityBadge valor="Inexistente" />);
     expect(screen.getByText(/sin dato/i)).toBeInTheDocument();
   });
 });

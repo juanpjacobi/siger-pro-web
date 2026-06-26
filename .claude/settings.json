@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tasklist*)",
+      "Bash(nvm version)",
+      "Bash(nvm list)",
+      "Bash(npm -v)",
+      "Bash(npm test)",
+      "Bash(npm run test)",
+      "Bash(npm run build)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ]
+  }
+}

@@ -30,6 +30,12 @@ const MODULES = [
     icon: ShieldAlert,
     description: "Que se protege: personas, bienes, infraestructura, sistemas, informacion",
   },
+  {
+    label: "Perimetro",
+    suffix: "/perimetro",
+    icon: Grid3x3,
+    description: "Tramos del cerramiento perimetral: cerramiento, continuidad, vulnerabilidades y criticidad",
+  },
 ];
 
 export default function ProyectoResumenPage() {

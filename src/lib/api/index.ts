@@ -1,3 +1,4 @@
+import { accesosApi } from "./accesos";
 import { adversaryTimeApi } from "./adversary-time";
 import { assetsApi } from "./assets";
 import { catalogsApi } from "./catalogs";
@@ -14,6 +15,7 @@ export * from "./catalogs";
 export * from "./methodology";
 export * from "./assets";
 export * from "./perimeter";
+export * from "./accesos";
 
 export const api = {
   projects: projectsApi,
@@ -23,4 +25,5 @@ export const api = {
   methodology: methodologyApi,
   assets: assetsApi,
   perimeter: perimeterApi,
+  accesos: accesosApi,
 };

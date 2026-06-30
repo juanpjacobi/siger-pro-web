@@ -76,7 +76,7 @@ function buildNavGroups(projectId: string | null): NavGroup[] {
         { label: "Perimetro", href: projectScoped("/perimetro"), icon: Grid3x3 },
         { label: "Cercos / Sensores", icon: Fence },
         { label: "Iluminacion", icon: Lightbulb },
-        { label: "Control de Accesos", icon: DoorOpen },
+        { label: "Control de Accesos", href: projectScoped("/accesos"), icon: DoorOpen },
         { label: "Monitoreo / CCTV", icon: Camera },
         { label: "Personal de Seguridad", icon: Users },
         { label: "Rondines", icon: Footprints },

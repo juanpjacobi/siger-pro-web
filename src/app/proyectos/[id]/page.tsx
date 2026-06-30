@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock, FileText, Grid3x3, ShieldAlert } from "lucide-react";
+import { Clock, DoorOpen, FileText, Grid3x3, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
@@ -35,6 +35,12 @@ const MODULES = [
     suffix: "/perimetro",
     icon: Grid3x3,
     description: "Tramos del cerramiento perimetral: cerramiento, continuidad, vulnerabilidades y criticidad",
+  },
+  {
+    label: "Control de Accesos",
+    suffix: "/accesos",
+    icon: DoorOpen,
+    description: "Puntos de acceso: controles fisicos, electronicos, protocolos y trazabilidad",
   },
 ];
 

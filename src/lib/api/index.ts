@@ -2,6 +2,7 @@ import { accesosApi } from "./accesos";
 import { adversaryTimeApi } from "./adversary-time";
 import { assetsApi } from "./assets";
 import { catalogsApi } from "./catalogs";
+import { cctvApi } from "./cctv";
 import { methodologyApi } from "./methodology";
 import { moslerApi } from "./mosler";
 import { perimeterApi } from "./perimeter";
@@ -16,6 +17,7 @@ export * from "./methodology";
 export * from "./assets";
 export * from "./perimeter";
 export * from "./accesos";
+export * from "./cctv";
 
 export const api = {
   projects: projectsApi,
@@ -26,4 +28,5 @@ export const api = {
   assets: assetsApi,
   perimeter: perimeterApi,
   accesos: accesosApi,
+  cctv: cctvApi,
 };

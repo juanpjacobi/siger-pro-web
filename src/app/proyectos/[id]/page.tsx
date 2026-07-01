@@ -1,6 +1,6 @@
 "use client";
 
-import { Camera, Clock, DoorOpen, FileText, Grid3x3, ShieldAlert } from "lucide-react";
+import { Camera, Clock, DoorOpen, FileText, Grid3x3, Lightbulb, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
@@ -47,6 +47,12 @@ const MODULES = [
     suffix: "/cctv",
     icon: Camera,
     description: "Camaras de video vigilancia: ubicacion, analiticas, estado, grabacion y criticidad",
+  },
+  {
+    label: "Iluminacion",
+    suffix: "/iluminacion",
+    icon: Lightbulb,
+    description: "Sectores de iluminacion: cobertura, estado, zonas oscuras, automatizacion y criticidad",
   },
 ];
 

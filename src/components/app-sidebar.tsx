@@ -75,7 +75,7 @@ function buildNavGroups(projectId: string | null): NavGroup[] {
         { label: "CPTED", icon: Lightbulb },
         { label: "Perimetro", href: projectScoped("/perimetro"), icon: Grid3x3 },
         { label: "Cercos / Sensores", icon: Fence },
-        { label: "Iluminacion", icon: Lightbulb },
+        { label: "Iluminacion", href: projectScoped("/iluminacion"), icon: Lightbulb },
         { label: "Control de Accesos", href: projectScoped("/accesos"), icon: DoorOpen },
         { label: "Sistema de Monitoreo", href: projectScoped("/cctv"), icon: Camera },
         { label: "Personal de Seguridad", icon: Users },
